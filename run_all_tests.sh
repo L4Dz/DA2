@@ -10,7 +10,8 @@ OUTPUT_DIR="basic/output"
 # Check binary exists
 if [ ! -f "$BINARY" ]; then
     echo "ERROR: Binary '$BINARY' not found. Compile first with:"
-    echo "  g++ main.cpp -o myProg"
+    echo "  make"
+    echo "  # or: g++ -std=c++17 -Wall -Wextra -O2 -o myProg main.cpp"
     exit 1
 fi
 

@@ -1,8 +1,12 @@
-// main.cpp
-// Project 2 – Compiler Register Allocation – DA Spring 2026
-//
-// Usage (batch):   ./myProg -b ranges.txt registers.txt allocation.txt
-// Usage (menu):    ./myProg
+/**
+ * @file main.cpp
+ * @brief Entry point: interactive menu and batch mode for the register allocator.
+ *
+ * Usage (batch):   ./myProg -b ranges.txt registers.txt allocation.txt
+ * Usage (menu):    ./myProg
+ *
+ * @project DA Spring 2026 — Programming Project II
+ */
 
 #include <iostream>
 #include <string>
@@ -145,17 +149,23 @@ static void menuMode() {
                 } else if (cfg.algorithm == "splitting") {
                     success = G.allocateWithSplitting(cfg.numRegisters, cfg.algorithmParam);
                 } else {
-                    G.greedyColoring(cfg.numRegisters);
+                    const int spillBudget = static_cast<int>(webs.size());
+                    G.greedyColoringDSatur(cfg.numRegisters);
+                    if (!G.getSpilledVertices().empty()) {
+                        for (auto *v : G.getVertexSet()) {
+                            v->setSpilled(false);
+                            v->setDisabled(false);
+                            v->setColor(-1);
+                        }
+                        G.greedyColoring(cfg.numRegisters);
+                    }
                     if (!G.getSpilledVertices().empty())
-                        success = G.allocateWithSpilling(cfg.numRegisters,
-                                                         static_cast<int>(webs.size()));
-                    else success = true;
+                        success = G.allocateWithSpilling(cfg.numRegisters, spillBudget);
+                    else
+                        success = true;
                 }
 
-                for (auto &w : webs) {
-                    Vertex<int> *v = G.findVertex(w.webId);
-                    if (v) w.reg = v->getColor();
-                }
+                webs = collectWebsFromGraph(G);
 
                 if (!success)
                     std::cerr << "WARNING: Could not colour the graph with "

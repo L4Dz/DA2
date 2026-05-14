@@ -1,0 +1,13 @@
+# Doxygen configuration — DA 2026 Project II
+PROJECT_NAME     = "DA2026 Register Allocation"
+PROJECT_NUMBER   = 1.0
+OUTPUT_DIRECTORY = docs
+GENERATE_HTML    = YES
+GENERATE_LATEX   = NO
+HTML_OUTPUT      = html
+INPUT            = main.cpp include src data_structures
+FILE_PATTERNS    = *.cpp *.h
+RECURSIVE        = YES
+EXTRACT_ALL      = YES
+QUIET            = YES
+WARN_IF_UNDOCUMENTED = NO
